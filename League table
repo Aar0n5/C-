@@ -1,0 +1,145 @@
+#include<stdio.h>
+#include<conio.h>
+#include<stdlib.h>
+#define MAX_TEAM_NAME 50
+#define MAX_STADIUM_NAME 50
+#define MAX_MANAGER_NAME 50
+
+
+typedef struct// to call in program
+{
+    unsigned int founded_in; // declare the integer data type
+    char teamname[MAX_TEAM_NAME];// declare the charecter data type
+    char stadiumname[MAX_STADIUM_NAME];// declare the character data type
+    char managername[MAX_MANAGER_NAME];// declare the character data type
+} s_TeamInfo;
+
+
+
+void menu()
+{
+    system("cls");
+    printf("\t\t\t###########################################################################");
+    printf("\n\t\t\t############                                                   ############");
+    printf("\n\t\t\t############          League Table System Project in C         ############");
+    printf("\n\t\t\t############                                                   ############");
+    printf("\n\t\t\t###########################################################################");
+    printf("\n\t\t\t---------------------------------------------------------------------------\n");
+    printf("\n\t\t\t----------------------------------------------------------------------------");
+
+
+    int choice = 0;
+    do
+    {
+        printf("\n\n\n\t\t\t1.Add Team");
+        printf("\n\t\t\t2.Print Table");
+        printf("\n\t\t\t0.Exit");
+        printf("\n\n\n\t\t\tEnter choice => ");
+        scanf("%d",&choice);
+        switch(choice)
+        {
+        case 1:
+            addTeamInDataBase();
+            break;
+
+        case 2:
+            viewTable();
+            break;
+
+        case 0:
+            printf("\n\n\n\t\t\t\tThank you!!!\n\n\n\n\n");
+            exit(1);
+            break;
+        default:
+            printf("\n\n\n\t\t\tINVALID INPUT!!! Try again...");
+        }                                            //Switch Ended
+    }
+    while(choice!=0);                                        //Loop Ended
+}
+
+void addTeamInDataBase()
+{
+    system("cls");
+    s_TeamInfo addTeamInfoInDataBase = {0};
+    FILE *fp = NULL;
+    int status = 0;
+    fp = fopen("record.txt","a+");
+    if(fp == NULL)
+    {
+        printf("File is not opened\n");
+        exit(1);
+    }
+
+    printf("\n\n\t\t\tENTER YOUR DETAILS BELOW:");
+    printf("\n\t\t\t---------------------------------------------------------------------------\n");
+    printf("\n\t\t\tYear of Foundation  = ");
+    fflush(stdin);
+    scanf("%u",&addTeamInfoInDataBase.founded_in);
+
+        printf("\n\t\t\tTeam Name  = ");
+        fflush(stdin);
+        fgets(addTeamInfoInDataBase.teamname,MAX_TEAM_NAME,stdin);
+
+
+        printf("\n\t\t\tStadium Name  = ");
+        fflush(stdin);
+        fgets(addTeamInfoInDataBase.stadiumname,MAX_STADIUM_NAME,stdin);
+
+
+        printf("\n\t\t\tManager Name  = ");
+        fflush(stdin);
+        fgets(addTeamInfoInDataBase.managername,MAX_MANAGER_NAME,stdin);
+
+
+    fwrite(&addTeamInfoInDataBase,sizeof(addTeamInfoInDataBase), 1, fp);
+    fclose(fp);
+
+    printf("Team added successfully");
+    printf("\n\n\t\t\tPress any key to go to main menu.....");
+    fflush(stdin);
+    getchar();
+}
+
+void viewTable()
+{
+    system("cls");
+    int found = 0;
+    s_TeamInfo addTeamInfoInDataBase = {0};
+    FILE *fp = NULL;
+    unsigned int countTeam = 1;
+
+    fp = fopen("record.txt","r+");
+    if(fp == NULL)
+    {
+        printf("File is not opened\n");
+        exit(1);
+    }
+
+    while (fread (&addTeamInfoInDataBase, sizeof(addTeamInfoInDataBase), 1, fp))
+    {
+        printf("\n\t\t\tTeam Count = %d\n\n",countTeam);
+        printf("\t\t\tTeam Name = %s\n",addTeamInfoInDataBase.teamname);
+        printf("\t\t\tStadium Name = %s\n",addTeamInfoInDataBase.stadiumname);
+        printf("\t\t\tManager Name = %s\n",addTeamInfoInDataBase.managername);
+        printf("\t\t\tYear of Foundation = %u\n",addTeamInfoInDataBase.founded_in);
+
+        found = 1;
+        ++countTeam;
+    }
+    fclose(fp);
+    if(!found)
+    {
+        printf("\n\t\t\tNo Record");
+    }
+    printf("\n\n\t\t\tPress any key to go to main menu.....");
+    fflush(stdin);
+    getchar();
+}
+
+
+int main()
+{
+menu();
+
+return 1;
+}
